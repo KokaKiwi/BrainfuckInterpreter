@@ -6,10 +6,10 @@ import java.util.Map;
 
 public class Instructions
 {
-    private final static Map<Character, Class<? extends Instruction>> instructions = new LinkedHashMap<Character, Class<? extends Instruction>>();
-    private final static Map<Character, Object[]>                     parameters   = new LinkedHashMap<Character, Object[]>();
+    private final Map<Character, Class<? extends Instruction>> instructions = new LinkedHashMap<Character, Class<? extends Instruction>>();
+    private final Map<Character, Object[]>                     parameters   = new LinkedHashMap<Character, Object[]>();
     
-    static
+    public Instructions()
     {
         register('>', IncrementPointerInstruction.class);
         register('<', DecrementPointerInstruction.class);
@@ -21,14 +21,14 @@ public class Instructions
         register(']', LoopInstruction.class, false);
     }
     
-    public static void register(char c, Class<? extends Instruction> clazz,
+    public void register(char c, Class<? extends Instruction> clazz,
             Object... params)
     {
         instructions.put(c, clazz);
         parameters.put(c, params);
     }
     
-    public static Instruction get(char c) throws Exception
+    public Instruction get(char c) throws Exception
     {
         Object[] params = parameters.get(c);
         Class<?>[] classes = new Class<?>[params.length];

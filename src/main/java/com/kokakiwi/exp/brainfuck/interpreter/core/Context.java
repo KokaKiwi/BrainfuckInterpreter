@@ -144,4 +144,14 @@ public class Context
         byte b = (byte) (in.read() & 0xff);
         array[pointer] = b;
     }
+    
+    public InputStream getIn()
+    {
+        return in;
+    }
+    
+    public OutputStream getOut()
+    {
+        return out;
+    }
 }

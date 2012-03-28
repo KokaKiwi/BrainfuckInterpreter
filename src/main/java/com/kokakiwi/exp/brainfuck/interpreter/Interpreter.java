@@ -5,11 +5,14 @@ import java.io.IOException;
 
 import com.kokakiwi.exp.brainfuck.interpreter.core.Context;
 import com.kokakiwi.exp.brainfuck.interpreter.core.Program;
+import com.kokakiwi.exp.brainfuck.interpreter.instructions.Instructions;
 
 public class Interpreter
 {
-    private File    file    = null;
-    private Context context = null;
+    private File         file            = null;
+    private Context      context         = null;
+    
+    private Instructions instructionsSet = new Instructions();
     
     public Interpreter(String[] args)
     {
@@ -28,7 +31,7 @@ public class Interpreter
     {
         try
         {
-            Program program = Program.load(file);
+            Program program = Program.load(instructionsSet, file);
             context = new Context(System.in, System.out);
             context.setProgram(program);
             
@@ -48,6 +51,16 @@ public class Interpreter
     public void setFile(File file)
     {
         this.file = file;
+    }
+    
+    public Instructions getInstructionsSet()
+    {
+        return instructionsSet;
+    }
+    
+    public void setInstructionsSet(Instructions instructionsSet)
+    {
+        this.instructionsSet = instructionsSet;
     }
     
     public Context getContext()

@@ -11,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 
 import com.kokakiwi.exp.brainfuck.interpreter.instructions.Instruction;
 import com.kokakiwi.exp.brainfuck.interpreter.instructions.Instructions;
+import com.kokakiwi.exp.brainfuck.interpreter.utils.Compiler;
 
 public class Program
 {
@@ -18,7 +19,7 @@ public class Program
     
     private final List<Instruction> instructions = new LinkedList<Instruction>();
     
-    public Program(char[] chars)
+    public Program(Instructions instructionsSet, char[] chars)
     {
         this.chars = chars;
         
@@ -26,7 +27,7 @@ public class Program
         {
             try
             {
-                Instruction instruction = Instructions.get(c);
+                Instruction instruction = instructionsSet.get(c);
                 instructions.add(instruction);
             }
             catch (Exception e)
@@ -46,21 +47,21 @@ public class Program
         return instructions;
     }
     
-    public static Program load(File file) throws IOException
+    public static Program load(Instructions instructionsSet, File file) throws IOException
     {
-        return load(new FileInputStream(file));
+        return load(instructionsSet, new FileInputStream(file));
     }
     
-    public static Program load(InputStream in) throws IOException
+    public static Program load(Instructions instructionsSet, InputStream in) throws IOException
     {
         char[] c = IOUtils.toCharArray(in);
         
-        return load(c);
+        return load(instructionsSet, c);
     }
     
-    public static Program load(char[] c)
+    public static Program load(Instructions instructionsSet, char[] c)
     {
-        Program program = new Program(c);
+        Program program = new Program(instructionsSet, Compiler.compile(c));
         
         return program;
     }
