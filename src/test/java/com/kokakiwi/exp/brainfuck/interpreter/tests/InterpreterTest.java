@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -12,12 +13,13 @@ import com.kokakiwi.exp.brainfuck.interpreter.Interpreter;
 
 public class InterpreterTest
 {
+    public final static boolean DUMP = true;
     
     @Test
     public void test() throws IOException
     {
-        OutputStream out = new DoubleOutput(System.out, new FileOutputStream(
-                new File("output.txt")));
+        OutputStream fileOutput = new FileOutputStream(new File("output.txt"));
+        OutputStream out = new DoubleOutput(System.out, fileOutput);
         
         String filename = "test.bf";
         Interpreter interpreter = new Interpreter(new String[] { filename });
@@ -25,9 +27,14 @@ public class InterpreterTest
         interpreter.getContext().setOut(out);
         interpreter.run();
         
-        System.out.println();
-        System.out.println(Arrays.toString(interpreter.getContext()
-                .getArrayBytes()));
+        if (DUMP)
+        {
+            PrintWriter writer = new PrintWriter(fileOutput);
+            writer.println();
+            writer.println("=== DEBUG TRACE ===");
+            writer.println("Memory dump: " + Arrays.toString(interpreter.getContext()
+                    .getArrayBytes()));
+        }
     }
     
     public static class DoubleOutput extends OutputStream

@@ -3,19 +3,22 @@ package com.kokakiwi.exp.brainfuck.interpreter.core;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import com.kokakiwi.exp.brainfuck.interpreter.instructions.Instruction;
 
 public class Context
 {
-    private Program      program = null;
+    public final static int MEMORYSIZE = 1048 * 16;           // 16 Ko
+                                                               
+    private Program         program    = null;
     
-    private int          readPointer;
-    private int          pointer;
-    private byte[]       array;
+    private int             readPointer;
+    private int             pointer;
+    private final byte[]    memory     = new byte[MEMORYSIZE];
     
-    private InputStream  in;
-    private OutputStream out;
+    private InputStream     in;
+    private OutputStream    out;
     
     public Context(InputStream in, OutputStream out)
     {
@@ -47,6 +50,14 @@ public class Context
         }
     }
     
+    public void reset()
+    {
+        readPointer = 0;
+        pointer = 0;
+        
+        Arrays.fill(memory, (byte) 0);
+    }
+    
     public boolean hasNext()
     {
         return readPointer < program.getInstructions().size();
@@ -57,15 +68,6 @@ public class Context
         Instruction instruction = program.getInstructions().get(readPointer);
         
         return instruction;
-    }
-    
-    public void reset()
-    {
-        readPointer = 0;
-        pointer = 0;
-        
-        int size = 1024;
-        array = new byte[size];
     }
     
     public Program getProgram()
@@ -86,16 +88,34 @@ public class Context
     public void setPointer(int pointer)
     {
         this.pointer = pointer;
+        
+        fixPointer();
     }
     
     public void incrementPointer()
     {
         this.pointer++;
+        
+        fixPointer();
     }
     
     public void decrementPointer()
     {
         this.pointer--;
+        
+        fixPointer();
+    }
+    
+    private void fixPointer()
+    {
+        while (this.pointer < 0)
+        {
+            this.pointer += MEMORYSIZE;
+        }
+        while (this.pointer >= MEMORYSIZE)
+        {
+            this.pointer -= MEMORYSIZE;
+        }
     }
     
     public int getReadPointer()
@@ -115,34 +135,34 @@ public class Context
     
     public byte[] getArrayBytes()
     {
-        return array;
+        return memory;
     }
     
     public byte getArray()
     {
-        return array[pointer];
+        return memory[pointer];
     }
     
     public void incrementArray()
     {
-        array[pointer]++;
+        memory[pointer]++;
     }
     
     public void decrementArray()
     {
-        array[pointer]--;
+        memory[pointer]--;
     }
     
     public void write() throws IOException
     {
-        out.write(((int) array[pointer]) & 0xff);
+        out.write(((int) memory[pointer]) & 0xff);
         out.flush();
     }
     
     public void read() throws IOException
     {
         byte b = (byte) (in.read() & 0xff);
-        array[pointer] = b;
+        memory[pointer] = b;
     }
     
     public InputStream getIn()
