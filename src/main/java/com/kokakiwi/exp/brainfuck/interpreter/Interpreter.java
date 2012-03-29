@@ -20,6 +20,7 @@ public class Interpreter
         {
             String filename = args[0];
             file = new File(filename);
+            
         }
         else
         {
@@ -27,20 +28,23 @@ public class Interpreter
         }
     }
     
-    public void run()
+    public void init()
     {
         try
         {
             Program program = Program.load(instructionsSet, file);
             context = new Context(System.in, System.out);
             context.setProgram(program);
-            
-            context.run();
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
+    }
+    
+    public void run()
+    {
+        context.run();
     }
     
     public File getFile()
@@ -77,7 +81,9 @@ public class Interpreter
     
     public static void main(String[] args)
     {
-        new Interpreter(args).run();
+        Interpreter interpreter = new Interpreter(args);
+        interpreter.init();
+        interpreter.run();
     }
     
 }

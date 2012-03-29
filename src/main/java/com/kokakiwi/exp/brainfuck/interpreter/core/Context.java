@@ -8,14 +8,14 @@ import com.kokakiwi.exp.brainfuck.interpreter.instructions.Instruction;
 
 public class Context
 {
-    private Program            program = null;
+    private Program      program = null;
     
-    private int                readPointer;
-    private int                pointer;
-    private byte[]             array;
+    private int          readPointer;
+    private int          pointer;
+    private byte[]       array;
     
-    private final InputStream  in;
-    private final OutputStream out;
+    private InputStream  in;
+    private OutputStream out;
     
     public Context(InputStream in, OutputStream out)
     {
@@ -64,7 +64,7 @@ public class Context
         readPointer = 0;
         pointer = 0;
         
-        int size = 128;
+        int size = 1024;
         array = new byte[size];
     }
     
@@ -150,8 +150,18 @@ public class Context
         return in;
     }
     
+    public void setIn(InputStream in)
+    {
+        this.in = in;
+    }
+    
     public OutputStream getOut()
     {
         return out;
+    }
+    
+    public void setOut(OutputStream out)
+    {
+        this.out = out;
     }
 }

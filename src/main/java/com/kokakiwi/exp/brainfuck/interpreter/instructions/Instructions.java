@@ -19,6 +19,7 @@ public class Instructions
         register(',', InputInstruction.class);
         register('[', LoopInstruction.class, true);
         register(']', LoopInstruction.class, false);
+        register('@', StopInstruction.class);
     }
     
     public void register(char c, Class<? extends Instruction> clazz,
